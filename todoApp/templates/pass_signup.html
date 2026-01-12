@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Sign Up</h1>
+<div class="col-lg-5 shadow mx-auto p-0">
+    <div class="alert alert-success">
+        <h2>Create Account</h2>
+    </div>
+    <div class="p-4">
+        <form method="post">
+            {% csrf_token %}
+            
+            {{ form.as_p }}
+
+            <button class= "btn btn-primary" type="submit" class="btn btn-success">Sign Up</button>
+            <br>
+            <a href="/signup">Sign Up ith Phone Number</a>
+        </form>
+    </div>
+
+</div>
+
+{% endblock %}

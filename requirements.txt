@@ -1,0 +1,24 @@
+
+
+#write requirements.txt
+
+django
+pytest
+pytest-django
+twilio
+psycopg2-binary
+#rest_framework
+djangorestframework
+python-dotenv
+django-unfold
+django-guardian
+django-import-export
+django-modeltranslation
+django-simple-history
+celery
+django-celery-beat
+django-celery-results
+redis
+kombu
+pyyaml
+googletrans==4.0.0-rc1

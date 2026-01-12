@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div>
+    <div class="container pt-4">
+        <div class="row p-0 mt-4">
+            <div class="col">
+                <div class="border">
+                    <div class="alert alert-info">
+                        <form action="/set-language/" method="post">
+                        {% csrf_token %}
+                            {{ langForm.as_p }}
+                        <input type="submit" value="ADD" class="btn btn-info">
+                        </form>
+                    </div>
+                    <a href="../" class="btn btn-info">home</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

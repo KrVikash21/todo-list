@@ -1,0 +1,72 @@
+version: "3.9"
+services:
+  db:
+    image: "postgres:14-alpine"
+    ports:
+      - "5432:5432"
+    environment:
+      - "POSTGRES_DB=todolist_db"
+      - "POSTGRES_USER=todolist_user"
+      - "POSTGRES_PASSWORD=root"
+    volumes:
+      - ./db-data2:/var/lib/postgresql/data
+    networks:
+      - todonet
+      
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+    networks:
+      - todonet
+
+  app:
+    build: .
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+      - celery
+      - celery-beat
+    volumes:
+      - .:/todoApp
+    entrypoint: /todoApp/entrypoint.sh
+    environment:
+      - "RUN_CELERY=false"
+      - "RUN_CELERY_BEAT=false"
+    networks:
+      - todonet
+
+  celery:
+    build: .
+    env_file:
+      - .env
+    volumes:
+      - .:/todoApp
+    entrypoint: /todoApp/entrypoint.sh
+    environment:
+      - "RUN_CELERY=true"
+      - "RUN_CELERY_BEAT=false"
+    networks:
+      - todonet
+  celery-beat:
+    build: .
+    env_file:
+      - .env
+    volumes:
+      - .:/todoApp
+    entrypoint: /todoApp/entrypoint.sh
+    environment:
+      - "RUN_CELERY=false"
+      - "RUN_CELERY_BEAT=true"
+    networks:
+      - todonet
+    
+  
+networks:
+  todonet:
+
+    

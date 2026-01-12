@@ -1,0 +1,73 @@
+#Install python, pip
+
+#apt-get install python3-virtualenv
+or
+    sudo apt install python3-pip
+        pip install virtualenv
+        virtualenv xyz-venv
+    source venv/bin/activate
+
+#install requirments
+pip install -r requirments.txt
+
+#create project
+
+ django-admin startproject mysite
+ python manage.py startapp myapp
+
+ python manage.py makemigrations
+ python manage.py migrate
+
+python manage.py createsuperuser
+
+python manage.py runserver
+
+#install postgressql
+sudo apt-get install postgresql postgresql-contrib
+sudo -u postgres psql
+\password
+\q
+sudo -u postgres createdb mydb
+sudo -u postgres psql
+\c mydb
+\q
+
+#create user
+sudo -u postgres createuser myuser
+sudo -u postgres psql
+ALTER USER myuser WITH PASSWORD 'password';
+GRANT ALL PRIVILEGES ON DATABASE mydb TO myuser;
+\q
+
+
+#docker 
+docker build -t todolist .
+docker run -p 8000:8000 todolist
+
+#docker-compose
+docker-compose up --build
+
+If Simple-history is not able to create "todoList_historicaltodo"
+
+Then,
+
+docker compose exec db psql -U todoList_user -d todoList_db
+
+db# CREATE TABLE "todoList_historicaltodo" (
+    "id" BIGINT,
+    "title" VARCHAR(50) NOT NULL,
+    "description" VARCHAR(200),
+    "status" VARCHAR(20) NOT NULL CHECK ("status" IN ('c', 'p')),
+    "date" TIMESTAMP WITHOUT TIME ZONE,
+    "history_id" SERIAL PRIMARY KEY,
+    "history_date" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    "history_change_reason" VARCHAR(100),
+    "history_type" CHAR(1) NOT NULL CHECK ("history_type" IN ('+', '~', '-')),
+    "history_user_id" INTEGER,
+    "user_id" INTEGER,
+    FOREIGN KEY ("user_id") REFERENCES auth_user ("id") ON DELETE SET NULL,
+    FOREIGN KEY ("history_user_id") REFERENCES auth_user ("id") ON DELETE SET NULL,
+    UNIQUE ("history_id", "history_date")
+);
+
+

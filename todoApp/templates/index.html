@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div>
+    <div class="container pt-4">
+        <div class="row p-0 mt-4">
+            <div class="col-lg-4 mx-auto shadow p-0">
+                <div class="alert alert-dark">
+                    <h2>Add New TODO</h2>
+                </div>
+                <div class="col-lg-4 mx-auto p-4">
+                    <form action="/add-todo/" method="post">
+                        {% csrf_token %}
+                        {% if request.user.is_superuser %}
+                            {{form_admin.as_p}}
+                        {% else %}
+                            {{form.as_p}}
+                        {% endif %}
+                        <hr>
+                        <input type="submit" value="ADD" class="btn btn-info">
+
+                    </form>
+                </div>
+            </div>
+            <div class="col">
+                <div class="border">
+                    <div class="alert alert-dark">
+                        <h2>TODO List</h2>
+                        <form id="setlanguage" action="/set-language/" method="post">
+                            {% csrf_token %}
+                            <select name="language" id="dropdown" onchange="submitForm()" class="btn btn-primary">
+                                <option value="en" {% if current_language == 'en' %}selected{% endif %}>English</option>
+                                <option value="de" {% if current_language == 'de' %}selected{% endif %}>German</option>
+                            </select>
+                        </form>
+                        
+                    </div>
+                    {% if todos|length == 0 %}
+                    <div class="alert alert-success">
+                        <p class="display-4 " style=" font-size: 30;">
+                            No pending Work
+                        </p>
+                    </div>
+                    {% else %}
+                    <div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>S.No.</th>
+                                    <th>Date</th>
+                                    <th>Title</th>
+                                    <th>Description</th>
+                                    <th>Status</th>
+                                    {% if request.user.is_superuser %}
+                                    <th>User</th>
+                                    {% endif %}
+                                    <th>Action </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                {% for todo in todos %}
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    <td>{{todo.date}}</td> 
+                                    {% if current_language == 'en' %}
+                                    <td>{{todo.title}}</td>
+                                    <td>{{todo.description}}</td>
+                                    {% elif current_language == 'de' %}
+                                    <td>{{todo.title_de}}</td>
+                                    <td>{{todo.description_de}}</td>
+                                    {% endif %}
+                                    <td>
+                                        {% if todo.status == 'p' %}
+                                        <a href="/change-status/{{todo.id}}/c" class="btn btn-info">Pending </a>
+                                        {% else %}
+                                        <a href="/change-status/{{todo.id}}/p" class="btn btn-success">Completed </a>
+                                        {% endif %}
+                                    </td>
+                                    {% if request.user.is_superuser %}
+                                    <td>{{todo.user}}</td>
+                                    {% endif %}
+                                    <td>
+                                        <a href="/delete-todo/{{todo.id}}" class="btn btn-danger">Delete </a>
+
+                                    </td>
+                                </tr>
+                                {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function submitForm() {
+        document.getElementById('setlanguage').submit();
+    }
+
+    function handleDropdownChange(event) {
+        submitForm();
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('dropdown').addEventListener('change', handleDropdownChange);
+    });
+</script>
+{% endblock %}
